@@ -1,4 +1,5 @@
-﻿from app import app
+﻿
+from app import app
 
 
 def test_home():
@@ -6,4 +7,4 @@ def test_home():
     response = client.get('/')
 
     assert response.status_code == 200
-    assert b"Hello, DevOps World! We are LIVE on Render!" in response.data
+    assert b"CI/CD and Docker Pipeline is a massive success! V2" in response.data
