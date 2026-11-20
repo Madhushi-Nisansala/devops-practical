@@ -1,5 +1,4 @@
-
-name: Flask CI Pipeline
+﻿name: Flask CI Pipeline
 
 on:
   push:
@@ -10,8 +9,8 @@ on:
       - main
 
 jobs:
-  test:
-    name: Run Flask Tests
+  test-and-build:
+    name: Test Flask and Build Docker Image
     runs-on: ubuntu-latest
 
     steps:
@@ -31,3 +30,9 @@ jobs:
       - name: Run automated tests
         run: |
           python -m pytest -v
+
+      - name: Validate Docker Compose
+        run: docker compose config -q
+
+      - name: Build Docker image
+        run: docker build -t devops-flask-app:ci .
