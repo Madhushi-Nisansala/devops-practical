@@ -8,9 +8,12 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   test-and-build:
-    name: Test Flask and Build Docker Image
+    name: Test Flask and Push Docker Image
     runs-on: ubuntu-latest
 
     steps:
@@ -34,5 +37,20 @@ jobs:
       - name: Validate Docker Compose
         run: docker compose config -q
 
-      - name: Build Docker image
-        run: docker build -t devops-flask-app:ci .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            madhushinisansala/devops-flask-app:latest
+            madhushinisansala/devops-flask-app:${{ github.sha }}
